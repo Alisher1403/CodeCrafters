@@ -4,7 +4,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { baseURL } from "../constants/apiConstants";
 
 export const problemsApi = createApi({
-    //     reducerPath: "problems",
+    // reducerPath: "problems",
     baseQuery: fetchBaseQuery({ baseUrl: baseURL }),
     endpoints: (builder) => ({
         // Kategoriyalarni olish
@@ -25,20 +25,41 @@ export const problemsApi = createApi({
             transformResponse: (response) => response.data?.questionList,
         }),
 
+        // Id bo'yicha savolni olish
+        getQuestion: builder.query({
+            query: ({ questionId, userId }) =>
+                `question/get/${questionId}/${userId}`,
+            transformResponse: (response) => response.data,
+        }),
+
         // Javob ni POST qilish
         postAnswer: builder.mutation({
+            query: (data) => {
+                const { questionId, ...body } = data;
+                return {
+                    url: `/question/submit/${questionId}`,
+                    method: "POST",
+                    body,
+                    // prepareHeaders: (headers, { getState }) => {
+                    //     console.log({ answer });
+                    //     // headers.set("Access-Control-Allow-Origin", "*");
+                    //     // headers.set(
+                    //     //     "Authorization",
+                    //     //     "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhYmJvc0BnbWFpbC5jb20iLCJpYXQiOjE2ODg3MTA1MDMsImV4cCI6MTY4ODc5NjkwM30.ddpgGAhkz8iXCXJ8VVPojEJirkzV4DXaIg6ZieEVY9U"
+                    //     // );
+                    //     return headers;
+                    // },
+                };
+            },
+            transformResponse: (response) => response.data,
+        }),
+
+        // Yechimni qo'shish
+        postSolution: builder.mutation({
             query: (answer) => ({
-                url: `/question/submit/${1}`,
+                url: `/solution/create`,
                 method: "POST",
                 body: answer,
-                prepareHeaders: (headers, { getState }) => {
-                    // headers.set("Access-Control-Allow-Origin", "*");
-                    headers.set(
-                        "Authorization",
-                        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhYmJvc0BnbWFpbC5jb20iLCJpYXQiOjE2ODg3MTA1MDMsImV4cCI6MTY4ODc5NjkwM30.ddpgGAhkz8iXCXJ8VVPojEJirkzV4DXaIg6ZieEVY9U"
-                    );
-                    return headers;
-                },
             }),
             transformResponse: (response) => response.data,
         }),
@@ -47,6 +68,8 @@ export const problemsApi = createApi({
 
 export const {
     useGetTopicsQuery,
+    useGetQuestionQuery,
+    usePostSolutionMutation,
     usePostAnswerMutation,
     useGetQuestionsByTopicQuery,
     useGetCategoriesQuery,

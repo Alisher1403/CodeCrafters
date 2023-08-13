@@ -15,95 +15,148 @@ import { ConfigProvider, theme } from "antd";
 import "antd/dist/reset.css";
 import ProfileSettings from "./pages/ProfileSettings/ProfileSettings";
 import Profile from "./pages/Profile/Profile";
+import PostSolution from "./pages/postSolution/PostSolution";
+import { Footer } from "./components/footer/Footer";
+import { Fragment } from "react";
 
 const App = () => {
-  const router = createBrowserRouter([
-    {
-      path: "/",
-      element: (
-        // <PrivateRoute>
-        <MainLayout />
-        // </PrivateRoute>
-      ),
-      children: [
+    const router = createBrowserRouter([
         {
-          index: true,
-          errorElement: <ErrorBoundary />,
-          element: (
-            // <PrivateRoute>
-            <MainPage />
-            // </PrivateRoute>
-          ),
-        },
-        {
-          path: "/problemslist",
-          errorElement: <ErrorBoundary />,
-          element: (
-            // <PrivateRoute>
-            <ProblemsListPage />
-            // </PrivateRoute>
-          ),
-        },
-        {
-          path: "/problem/:id",
-          errorElement: <ErrorBoundary />,
-          element: (
-            // <PrivateRoute>
-            <ProblemPage />
-            // </PrivateRoute>
-          ),
-    
-        },
-        {
-          path: "/profile",
-          element: <Profile />,
-        },
-        {
-          path: "/profileSettings",
-          element: <ProfileSettings />,
-        },
-      ],
-    },
-    {
-      path: "/m",
-      errorElement: <ErrorBoundary />,
-      element: (
-        <PrivateRoute>
-          <h1>MMMM</h1>
-        </PrivateRoute>
-      ),
-    },
-    {
-      path: "/login",
-      element: <SignIn />,
-    },
-    {
-      path: "/signup",
-      element: <SignUpPage />,
-    },
+            path: "/",
+            element: (
+                <PrivateRoute>
+                    <MainLayout />
+                </PrivateRoute>
+            ),
+            children: [
+                {
+                    path: "/",
+                    errorElement: <ErrorBoundary />,
+                    element: (
+                        <Fragment>
+                            <MainPage />
+                            <Footer />
+                        </Fragment>
 
-    {
-      path: "*",
-      element: <NotFoundPage />,
-    },
-  ]);
+                    ),
+                },
+                {
+                    path: "/problemslist",
+                    errorElement: <ErrorBoundary />,
+                    element: (
+                        <Fragment>
+                            <ProblemsListPage />
+                            {/* <Footer /> */}
+                        </Fragment>
+                    ),
+                },
+                {
+                    path: "/problem/:id",
+                    errorElement: <ErrorBoundary />,
+                    element: (
+                        // <PrivateRoute>
+                        <ProblemPage />
+                        // </PrivateRoute>
+                    ),
+                },
+                {
+                    path: "/profile",
+                    element: <Profile />,
+                },
+                {
+                    path: "/profileSettings",
+                    element: <ProfileSettings />,
+                },
+                {
+                    path: "*",
+                    element: <MainPage />,
+                },
+            ],
+        },
+        {
+            path: "/",
+            element: (
+                <PrivateRoute>
+                    <MainLayout />
+                </PrivateRoute>
+            ),
+            children: [
+                {
+                    path: "/",
+                    errorElement: <ErrorBoundary />,
+                    element: (
+                        // <PrivateRoute>
+                        <MainPage />
+                        // </PrivateRoute>
+                    ),
+                },
+                {
+                    path: "/problemslist",
+                    errorElement: <ErrorBoundary />,
+                    element: (
+                        // <PrivateRoute>
+                        <ProblemsListPage />
+                        // </PrivateRoute>
+                    ),
+                },
+                {
+                    path: "/problem/:id",
+                    errorElement: <ErrorBoundary />,
+                    element: (
+                        // <PrivateRoute>
+                        <ProblemPage />
+                        // </PrivateRoute>
+                    ),
+                },
+                {
+                    path: "/profile",
+                    element: <Profile />,
+                },
+                {
+                    path: "/profileSettings",
+                    element: <ProfileSettings />,
+                },
+                {
+                    path: "*",
+                    element: <MainPage />,
+                },
+            ],
+        },
+        {
+            path: "/post-solution",
+            element: <PostSolution />
+        },
+        {
+            path: "/login",
+            element: <SignIn />,
+        },
+        {
+            path: "/signup",
+            element: <SignUpPage />,
+        },
 
-  return (
-    <Provider store={store}>
-      <ConfigProvider
-        theme={{
-          token: {
-            // any theme overirdes
-            colorPrimary: "#7f00ff",
-          },
-          // this line sets it to dark mode
-          algorithm: theme.darkAlgorithm,
-        }}
-      >
-        <RouterProvider router={router} />
-      </ConfigProvider>
-    </Provider>
-  );
+        {
+            path: "*",
+            element: <NotFoundPage />,
+        },
+    ]);
+
+    return (
+        <Provider store={store}>
+            <ConfigProvider
+                theme={{
+                    token: {
+                        // any theme overirdes
+                        colorPrimary: "#7f00ff",
+                    },
+                    // this line sets it to dark mode
+                    algorithm: theme.darkAlgorithm,
+                }}
+            >
+                <RouterProvider router={router} />
+            </ConfigProvider>
+        </Provider>
+    );
 };
 
 export default App;
