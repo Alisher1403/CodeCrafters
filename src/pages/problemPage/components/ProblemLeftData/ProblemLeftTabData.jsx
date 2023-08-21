@@ -1,12 +1,25 @@
-/* eslint-disable react/prop-types */
+import React from "react";
 import { Select } from "antd";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
-// import Tab3Table from "./Tab3Table";
-
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+} from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setSelectedId } from "../../../../app/features/rightSide/leftSideSlice";
 const Tab3 = () => {
+  const dispatch = useDispatch();
+
   const [data, setData] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios({
@@ -24,7 +37,7 @@ const Tab3 = () => {
           ...item,
           id: uuidv4(),
         }));
-        console.log(dataWithIds);
+        // console.log(dataWithIds);
         setData(dataWithIds);
       })
       .catch((error) => {
@@ -32,7 +45,13 @@ const Tab3 = () => {
       });
   }, []);
 
+  const handleRowClick = (id) => {
+    dispatch(setSelectedId(id))
+    navigate(`/problem/2/${id}`);
+  };
+
   const [status, setStatus] = useState("");
+
   const handleChange = (value) => {
     setStatus(value);
   };
@@ -50,99 +69,128 @@ const Tab3 = () => {
 
   return (
     <>
-      <div className="">
-        <ul className="flex justify-between items-center">
-          <li>
-            <Select
-              defaultValue={{
-                value: "status",
-                label: "Status",
-              }}
-              onChange={handleChange}
-              options={uniqueStatusValues.map((status) => ({
-                value: status, // Ensure each option has a unique value
-                label: status,
-              }))}
-              style={{
-                width: 90,
-              }}
-            />
-          </li>
-          <li>
-            <Select
-              defaultValue={{
-                value: "langauge",
-                label: "Language",
-              }}
-              onChange={handleChangeLang}
-              options={uniqueStatusValuesLang.map((lang) => ({
-                value: lang, // Ensure each option has a unique value
-                label: lang,
-              }))}
-              style={{
-                width: 90,
-              }}
-            />
-          </li>
-          <li className="w-[90px]">
-            <button>Runtime</button>
-          </li>
-          <li className="w-[90px]">
-            <button>Time</button>
-          </li>
-        </ul>
-        <ul className="flex justify-between items-center">
-          {/* satatus options */}
-          <li>
-            <div className="flex flex-col py-[9px]">
-              {data.map((el) => (
-                <div
-                  key={el.id}
-                  className={
-                    el.status === "ERROR"
-                      ? `text-sm font-medium px-2 text-red-600 py-[9px]`
-                      : `text-sm font-medium px-2 text-green-600 py-[9px]`
-                  }
+      <TableContainer
+        component={Paper}
+        sx={{
+          backgroundColor: "transparent",
+          boxShadow: "none",
+        }}
+      >
+        <Table aria-label="custom table">
+          <TableHead>
+            <TableRow>
+              <TableCell
+                sx={{
+                  borderBottomColor: "#f7faff2e",
+                }}
+              >
+                <Select
+                  defaultValue={{
+                    value: "status",
+                    label: "Status",
+                  }}
+                  onChange={handleChange}
+                  options={uniqueStatusValues.map((status) => ({
+                    value: status,
+                    label: status,
+                  }))}
+                  style={{
+                    width: 90,
+                  }}
+                />
+              </TableCell>
+              <TableCell sx={{ borderBottomColor: "#f7faff2e" }}>
+                <Select
+                  defaultValue={{
+                    value: "langauge",
+                    label: "Language",
+                  }}
+                  onChange={handleChangeLang}
+                  options={uniqueStatusValuesLang.map((lang) => ({
+                    value: lang,
+                    label: lang,
+                  }))}
+                  style={{
+                    width: 90,
+                  }}
+                />
+              </TableCell>
+              <TableCell
+                sx={{
+                  borderBottomColor: "#f7faff2e",
+                  color: "#eff1f6bf",
+                }}
+              >
+                <button>Runtime</button>
+              </TableCell>
+              <TableCell
+                sx={{
+                  borderBottomColor: "#f7faff2e",
+                  color: "#eff1f6bf",
+                }}
+              >
+                <button>Time</button>
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {data.map((el) => (
+              <TableRow
+                key={el.id}
+                onClick={() => handleRowClick(el.id)}
+                to={`/problem/2/${el.id}`} // Replace with your route structure
+                sx={{
+                  textDecoration: "none",
+                  "&:hover": { backgroundColor: "#ffffff12" },
+                }}
+                style={{ cursor: "pointer" }}
+              >
+                <TableCell
+                  component="th"
+                  scope="row"
+                  sx={{
+                    borderBottom: "none",
+                    color: (theme) =>
+                      el.status === "ERROR"
+                        ? theme.palette.error.main
+                        : theme.palette.success.main,
+                  }}
                 >
                   {el.status}
-                </div>
-              ))}
-            </div>
-          </li>
-          {/* language options */}
-          <li>
-            <div className="lang flex flex-col py-[9px]">
-              {data.map((el) => (
-                <div key={el.id} className="px-2 py-[9px]">
+                </TableCell>
+                <TableCell
+                  sx={{
+                    borderBottom: "none",
+                    color: "#eff1f6bf",
+                  }}
+                >
                   {el.language}
-                </div>
-              ))}
-            </div>
-          </li>
-          <li className="pt-2 cursor-pointer hover:bg-[#ffffff12]">
-            <div className="runtime py-[9px]">
-              {data.map((el) => (
-                <div key={el.id} className="px-2 py-[9px]">
+                </TableCell>
+                <TableCell
+                  sx={{
+                    borderBottom: "none",
+                    color: "#eff1f6bf",
+                  }}
+                >
+                  {" "}
                   {`${el.runtime} ms`}
-                </div>
-              ))}
-            </div>
-          </li>
-          <li className="pt-2 cursor-pointer hover:bg-[#ffffff12]">
-            <div className="time py-[9px]">
-              {data.map((el) => (
-                <div key={el.id} className="px-2 py-[9px]">
+                </TableCell>
+                <TableCell
+                  sx={{
+                    borderBottom: "none",
+                    color: "#eff1f6bf",
+                  }}
+                >
                   {`${new Date(el.time)
                     .toLocaleString("en-US", { month: "short" })
                     .toLowerCase()} ${new Date(el.time).getDate()}, 
                   ${new Date(el.time).getFullYear()}`}
-                </div>
-              ))}
-            </div>
-          </li>
-        </ul>
-      </div>
-      {/* <Tab3Table/> */}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </>
   );
 };
