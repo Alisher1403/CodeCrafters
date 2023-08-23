@@ -1,16 +1,30 @@
-/* eslint-disable react/prop-types */
-import { Tabs, Tag } from "antd";
-import { memo } from "react";
+/**
+ * eslint-disable react/prop-types
+ *
+ * @format
+ */
+
+import { Button, Tabs, Tag } from "antd";
+import { memo, useState } from "react";
 import { CorrectIcon, DislikeButton, LikeButton } from "../../../utils/icons";
 import { getQuestionDifficulty } from "../../../utils/functions";
 import ProblemLeftExampleCard from "./ProblemLeftExampleCard";
 
 // problem data
 import Tab3 from "./ProblemLeftData/ProblemLeftTabData";
+// import { Resizable } from "re-resizable";
+import { ReflexContainer, ReflexSplitter, ReflexElement } from "react-reflex";
 
-const ProblemLeftSide = ({ question }) => {
+const ProblemLeftSide = ({ question = {} }) => {
+  const [elementHeight, setHeight] = useState(0);
+
   const onChangeTab = (key) => {
     // console.log(key);
+  };
+
+  const onResize = (a) => {
+    console.log(a.screenX);
+    setHeight(a.screenX);
   };
 
   const items = [
@@ -23,7 +37,10 @@ const ProblemLeftSide = ({ question }) => {
           <div className="left-side__info">
             <Tag
               color="orange"
-              style={{ borderRadius: "50px", padding: "2px 15px" }}
+              style={{
+                borderRadius: "50px",
+                padding: "2px 15px",
+              }}
             >
               {getQuestionDifficulty(question.level)}
             </Tag>
@@ -37,16 +54,22 @@ const ProblemLeftSide = ({ question }) => {
               <span>{question.dislike}</span>
             </button>
           </div>
-          <div className="left-problem__text">{question.definition}</div>
+          <div className="left-problem__text">
+            <pre>{question.definition?.trim()}</pre>
+          </div>
           <div className="left-problem__examples">
             {question.exampleList?.map((example, index) => {
-              return (
-                <ProblemLeftExampleCard
-                  key={index}
-                  example={example}
-                  index={index}
-                />
-              );
+              return <ProblemLeftExampleCard key={index} example={example} index={index} />;
+            })}
+          </div>
+          <div className="left-problem__examples">
+            {question.exampleList?.map((example, index) => {
+              return <ProblemLeftExampleCard key={index} example={example} index={index} />;
+            })}
+          </div>
+          <div className="left-problem__examples">
+            {question.exampleList?.map((example, index) => {
+              return <ProblemLeftExampleCard key={index} example={example} index={index} />;
             })}
           </div>
         </div>
@@ -65,15 +88,24 @@ const ProblemLeftSide = ({ question }) => {
   ];
 
   return (
-    <section className="left-side">
-      <div className="left-side__header">
-        <Tabs
-          size="small"
-          defaultActiveKey="1"
-          items={items}
-          onChange={onChangeTab}
-        />
-      </div>
+    <section className="problem-left-container h-full flex w-full">
+      <ReflexContainer orientation="horizontal" className="h-full w-full flex flex-col">
+        <ReflexElement style={{overflow: 'hidden'}}>
+          <div className="left-side">
+            <Tabs size="small" defaultActiveKey="1" items={items} onChange={onChangeTab} />
+          </div>
+        </ReflexElement>
+        <ReflexSplitter />
+        <ReflexElement size={150}>
+          <div className="left-side__submit">
+            <div className="left-side__toggler">Console v</div>
+            <div className="left-side__actions">
+              <Button size="small">Tekshirish</Button>
+              <Button size="small">Javobni yuborish</Button>
+            </div>
+          </div>
+        </ReflexElement>
+      </ReflexContainer>
     </section>
   );
 };
