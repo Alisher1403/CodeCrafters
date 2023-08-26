@@ -19,7 +19,6 @@ import PostSolution from "./pages/postSolution/PostSolution";
 import { Footer } from "./components/footer/Footer";
 import { Fragment } from "react";
 import Leaderboard from "./pages/LeaderBoard/LeaderBoard";
-import ProblemLeftSide from "./pages/problemPage/components/ProblemLeftSide";
 
 const App = () => {
   const router = createBrowserRouter([
@@ -78,7 +77,7 @@ const App = () => {
           element: <ProblemPage />,
         },
         {
-          path: "/problem/:query/:id",
+          path: "/:query/:id",
           errorElement: <ErrorBoundary />,
           element: (
             // <PrivateRoute>
